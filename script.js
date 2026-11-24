@@ -8,15 +8,26 @@ const orders = [
   { order_id: "MED-005", city: "Chennai",   order_date: "2026-11-06", promised_date: "2026-11-09", delivered_date: "2026-11-10" }
 ];
 
+// An order is late only if it is delivered AND delivered after the promised date.
+// Not delivered yet (blank date) is NOT marked late in v2.
+function isLate(order) {
+  if (order.delivered_date === "") {
+    return false;
+  }
+  return new Date(order.delivered_date) > new Date(order.promised_date);
+}
+
 const tbody = document.getElementById("orders-body");
 
 orders.forEach(function (order) {
+  const late = isLate(order);
   const row = document.createElement("tr");
   row.innerHTML =
     "<td>" + order.order_id + "</td>" +
     "<td>" + order.city + "</td>" +
     "<td>" + order.order_date + "</td>" +
     "<td>" + order.promised_date + "</td>" +
-    "<td>" + order.delivered_date + "</td>";
+    "<td>" + order.delivered_date + "</td>" +
+    "<td>" + (late ? '<span class="late-flag">Late</span>' : "") + "</td>";
   tbody.appendChild(row);
 });
